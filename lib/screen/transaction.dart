@@ -1,3 +1,4 @@
+import 'package:desktop_app_test/model/expansion_model.dart';
 import 'package:desktop_app_test/provider/content_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -97,7 +98,7 @@ class Card extends StatelessWidget {
   }
 }
 
-class InvoiceFeat extends StatelessWidget {
+class InvoiceFeat extends StatefulWidget {
   final String? image;
   final String? title;
   const InvoiceFeat({
@@ -107,25 +108,36 @@ class InvoiceFeat extends StatelessWidget {
   });
 
   @override
+  State<InvoiceFeat> createState() => _InvoiceFeatState();
+}
+
+class _InvoiceFeatState extends State<InvoiceFeat> {
+  String? selectedCon;
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Column(
         children: [
-          image == ''
+          widget.image == ''
               ? const SizedBox.shrink()
               : Image.asset(
-                  image!,
+                  widget.image!,
                   width: 25,
                   height: 25,
                 ),
           TextButton(
+            autofocus:
+                selectedCon == widget.title, // i will change to used list
             onPressed: () {
               Provider.of<ContentProvider>(context, listen: false)
-                  .changeContent(title!);
+                  .changeContent(widget.title!);
+              setState(() {
+                selectedCon = widget.title!;
+              });
             },
             child: Text(
-              title!,
+              widget.title!,
               style: const TextStyle(
                   fontFamily: 'DAUNPENH',
                   color: Color.fromARGB(255, 9, 100, 173),
@@ -139,37 +151,59 @@ class InvoiceFeat extends StatelessWidget {
   }
 }
 
-class InvoiceBody extends StatelessWidget {
+class InvoiceBody extends StatefulWidget {
   const InvoiceBody({super.key});
 
   @override
+  State<InvoiceBody> createState() => _InvoiceBodyState();
+}
+
+class _InvoiceBodyState extends State<InvoiceBody> {
+  //final bool isClick = false;
+  int? selectedIndex;
+  @override
   Widget build(BuildContext context) {
+    String exContent = Provider.of<ContentProvider>(context).exContent!;
     return Container(
       // color: const Color.fromARGB(255, 205, 147, 166),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             height: 700,
             width: 300,
             color: Colors.amber,
             child: ExpansionTile(
-              title: const Text('ExpansionTile 1'),
+              title: const Text('វិក័យប័ត្រ'),
               children: <Widget>[
                 ListView.builder(
                   shrinkWrap: true,
-                  itemCount: 50,
+                  itemCount: invoicModel.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return ListTile(
-                      //selected: true,
-                      title: Text('This is tile number $index'),
-                      leading:
-                          Image.asset('assets/images/icons8-invoice-64.png'),
+                    return InkWell(
+                      onTap: () {
+                        setState(() {
+                          selectedIndex = index;
+                        });
+
+                        Provider.of<ContentProvider>(context, listen: false)
+                            .changeContentEx(invoicModel[index].title!);
+                        print(invoicModel[index].title);
+                      },
+                      child: ListTile(
+                        selected: selectedIndex == index,
+                        title: Text(invoicModel[index].title!),
+                        leading: Image.asset(invoicModel[index].img!),
+                      ),
                     );
                   },
                 ),
               ],
             ),
-          )
+          ),
+          exContent == 'បែងចែកវិក័យប័ត្រ'
+              ? Text('fnekgherjgk')
+              : Text(exContent),
         ],
       ),
     );
