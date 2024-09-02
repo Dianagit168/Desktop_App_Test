@@ -1,5 +1,6 @@
 import 'package:desktop_app_test/model/expansion_model.dart';
 import 'package:desktop_app_test/provider/content_provider.dart';
+import 'package:desktop_app_test/screen/body_midle_side.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -171,8 +172,7 @@ class _InvoiceBodyState extends State<InvoiceBody> {
         children: [
           Container(
             height: 700,
-            width: 300,
-            color: Colors.amber,
+            width: 200,
             child: ExpansionTile(
               title: const Text('វិក័យប័ត្រ'),
               children: <Widget>[
@@ -193,7 +193,10 @@ class _InvoiceBodyState extends State<InvoiceBody> {
                       child: ListTile(
                         selected: selectedIndex == index,
                         title: Text(invoicModel[index].title!),
-                        leading: Image.asset(invoicModel[index].img!),
+                        leading: Image.asset(
+                          invoicModel[index].img!,
+                          height: 30,
+                        ),
                       ),
                     );
                   },
@@ -202,7 +205,7 @@ class _InvoiceBodyState extends State<InvoiceBody> {
             ),
           ),
           exContent == 'បែងចែកវិក័យប័ត្រ'
-              ? Text('fnekgherjgk')
+              ? const BodyMidleSide()
               : Text(exContent),
         ],
       ),

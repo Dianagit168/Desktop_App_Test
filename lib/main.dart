@@ -1,12 +1,20 @@
 import 'package:desktop_app_test/home_screen.dart';
 import 'package:desktop_app_test/provider/content_provider.dart';
+import 'package:desktop_app_test/provider/report_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => ContentProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => ContentProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ReportProvider(),
+        )
+      ],
       child: const MyApp(),
     ),
   );
