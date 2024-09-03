@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 class ReportProvider with ChangeNotifier {
   String _lacalName = '';
   List<ReportModel> _reports = [];
-  Map<int, bool> _selectedInvoices = {};
+  Map<String, bool> _selectedInvoices = {};
   double _totalAmount = 0.0;
 
   String get lacalName => _lacalName;
   List<ReportModel> get reports => _reports;
   double get totalAmount => _totalAmount;
-  Map<int, bool> get selectedInvoices => _selectedInvoices;
+  Map<String, bool> get selectedInvoices => _selectedInvoices;
   List<ReportModel> get selectedInvoicesList {
     return _reports
         .where((report) => _selectedInvoices[report.id] == true)

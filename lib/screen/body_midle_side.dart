@@ -1,6 +1,8 @@
 import 'package:desktop_app_test/model/report_model.dart';
+import 'package:desktop_app_test/provider/carrier_provider.dart';
 import 'package:desktop_app_test/provider/report_provider.dart';
 import 'package:desktop_app_test/sevice/invoice_pdf_service.dart';
+import 'package:desktop_app_test/widgets/column_content.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -35,7 +37,7 @@ class InvioceTable extends StatelessWidget {
     final totalAmount = Provider.of<ReportProvider>(context).totalAmount;
     final selectedInvoices =
         Provider.of<ReportProvider>(context).selectedInvoicesList;
-
+    // final selectedCarrier = Provider.of<CarrierProvider>(context).carrierName;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -102,27 +104,100 @@ class InvioceTable extends StatelessWidget {
             ],
             rows: rowData(context, reports),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('Total: \$${totalAmount.toStringAsFixed(2)}'),
-          ),
-          Container(
-            width: 500,
-            color: Colors.amber,
-            child: ListView.builder(
-              itemCount: selectedInvoices.length,
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                final invoice = selectedInvoices[index];
-                return ListTile(
-                  title: Text(
-                      'Invoice ID: ${invoice.id}, Amount: \$${invoice.money}'),
-                  subtitle: Text(
-                      'Customer: ${invoice.cusName}, Market: ${invoice.mall}'),
-                );
-              },
+          SizedBox(
+            width: 750,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 30),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: boldText('របាយការប្រមូលលុយប្រចាំថ្ងៃ'),
+                      ),
+                      boldText('03/09/2024'),
+                    ],
+                  ),
+                ),
+                ListView.builder(
+                  itemCount: selectedInvoices.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    final invoice = selectedInvoices[index];
+                    return Container(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      margin: const EdgeInsets.only(bottom: 20),
+                      decoration: BoxDecoration(border: Border.all()),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ColoumnContent(
+                            content: 'ល.រ',
+                            title: " ${index + 1}",
+                          ),
+                          ColoumnContent(
+                            content: 'លេខកូដអតិថិជន',
+                            title: invoice.id.toString(),
+                          ),
+                          ColoumnContent(
+                            content: 'ឈ្មោះអតិថិជន',
+                            title: invoice.cusName!,
+                          ),
+                          ColoumnContent(
+                            content: 'តូប',
+                            title: invoice.shop!,
+                          ),
+                          ColoumnContent(content: 'កូដ', title: invoice.code!),
+                          const ColoumnContent(
+                            content: 'ចាស់',
+                            title: '0',
+                          ),
+                          ColoumnContent(
+                            content: 'ថ្មី',
+                            title: selectedInvoices.length.toString(),
+                          ),
+                          const ColoumnContent(
+                            content: 'ដូរ',
+                            title: '0',
+                          ),
+                          ColoumnContent(
+                            content: 'ទឹកលុយ',
+                            title: invoice.money.toString(),
+                          ),
+                          const ColoumnContent(
+                            content: 'អីវ៉ាន់ត្រឡប់',
+                            title: '',
+                          ),
+                          const ColoumnContent(
+                            content: 'ផ្សេងៗ',
+                            title: '',
+                          ),
+                          const ColoumnContent(
+                            content: 'ចំនួនទូទាត់',
+                            title: '',
+                          ),
+                          const ColoumnContent(
+                            content: 'ថ្ងៃណាត់',
+                            title: '',
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: boldText('Total: \$${totalAmount.toStringAsFixed(2)}'),
+                ),
+                // Padding(
+                //   padding: const EdgeInsets.all(8.0),
+                //   child: boldText(selectedCarrier),
+                // ),
+              ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -287,7 +362,7 @@ class CarrierTable extends StatelessWidget {
           border: TableBorder.all(width: 0.5),
           columnSpacing: 15,
           columns: columnHeadCarrier(),
-          rows: rowDataCarrier(),
+          rows: rowDataCarrier(context),
         ),
       ],
     );
@@ -306,14 +381,21 @@ List<DataColumn> columnHeadCarrier() {
   ];
 }
 
-List<DataRow> rowDataCarrier() {
+List<DataRow> rowDataCarrier(BuildContext context) {
+  final selectedCarrier = Provider.of<CarrierProvider>(context).carrierName;
   return carrierData.map((e) {
+    final isSelected = e.title == selectedCarrier;
+
     return DataRow(
       cells: [
-        const DataCell(
+        DataCell(
           Checkbox(
-            value: false,
-            onChanged: null,
+            value: isSelected,
+            onChanged: (value) {
+              print("selectedCarrier ${selectedCarrier}");
+              Provider.of<CarrierProvider>(context, listen: false)
+                  .changeCarrier(e.title!);
+            },
           ),
         ),
         DataCell(

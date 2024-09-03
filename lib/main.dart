@@ -1,4 +1,5 @@
 import 'package:desktop_app_test/home_screen.dart';
+import 'package:desktop_app_test/provider/carrier_provider.dart';
 import 'package:desktop_app_test/provider/content_provider.dart';
 import 'package:desktop_app_test/provider/report_provider.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,9 @@ void main() {
         ),
         ChangeNotifierProvider(
           create: (context) => ReportProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => CarrierProvider(),
         )
       ],
       child: const MyApp(),

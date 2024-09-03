@@ -8,7 +8,7 @@ class ReportDetail {
 }
 
 class ReportModel {
-  final int? id;
+  final String? id;
   final String? cusName;
   final String? code;
   final double? money;
@@ -32,21 +32,21 @@ List<Map<String, dynamic>> reportData = [
     'location': 'វ៉េងស្រេង',
     'reports': [
       ReportModel(
-          id: 001,
+          id: '01',
           cusName: 'Dyna',
-          code: 'Xcode',
+          code: 'BC1',
           money: 100,
           location: 'PP',
           mall: 'Kmall',
-          shop: 'll110'),
+          shop: '18H'),
       ReportModel(
-          id: 002,
-          cusName: 'Dany',
-          code: 'Xcode',
+          id: '02',
+          cusName: 'Diana Chen',
+          code: 'BC2',
           money: 50,
           location: 'PP',
-          mall: 'Kmall',
-          shop: 'll110'),
+          mall: 'Eaon2',
+          shop: '10H'),
     ],
   },
   {
