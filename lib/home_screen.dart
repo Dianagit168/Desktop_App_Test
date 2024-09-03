@@ -30,20 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           backgroundColor: Colors.purple,
           centerTitle: true,
-          actions: const [
-            InkWell(
-              child: Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(
-                    Icons.exit_to_app_outlined,
-                    size: 15,
-                  ),
-                ],
-              ),
-            ),
-            Text('Exit')
-          ],
           bottom: TabBar(
             isScrollable: true,
             indicatorSize: TabBarIndicatorSize.tab,

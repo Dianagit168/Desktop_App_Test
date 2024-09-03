@@ -1,6 +1,6 @@
-import 'package:desktop_app_test/home_screen.dart';
 import 'package:desktop_app_test/model/report_model.dart';
 import 'package:desktop_app_test/provider/report_provider.dart';
+import 'package:desktop_app_test/sevice/invoice_pdf_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,19 +11,13 @@ class BodyMidleSide extends StatelessWidget {
   Widget build(BuildContext context) {
     final locationName = Provider.of<ReportProvider>(context).lacalName;
     print("object $locationName");
-    return const Column(
-      // mainAxisAlignment: MainAxisAlignment,
+    return const Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text('Row of print btn'),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            LocationTable(),
-            InvioceTable(),
-            CarrierTable(),
-          ],
-        ),
+        LocationTable(),
+        InvioceTable(),
+        CarrierTable(),
       ],
     );
   }
@@ -36,13 +30,44 @@ class InvioceTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final InvoicePdfService invoicePdfService = InvoicePdfService();
     final reports = Provider.of<ReportProvider>(context).reports;
     final totalAmount = Provider.of<ReportProvider>(context).totalAmount;
+    final selectedInvoices =
+        Provider.of<ReportProvider>(context).selectedInvoicesList;
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Row(
+            children: [
+              IconButton(
+                onPressed: () async {
+                  final data = await invoicePdfService.generatePdf(context);
+                  invoicePdfService.savePdffile('ivoice_pdf', data);
+                },
+                icon: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: Image.asset(
+                        'assets/images/icons8-printer-50.png',
+                        height: 25,
+                      ),
+                    ),
+                    const Text(
+                      'រក្សាទុកនិងបោះពុម្ភ',
+                      style: TextStyle(color: Colors.blue),
+                    )
+                  ],
+                ),
+              ),
+              const SizedBox(width: 20),
+              boldText('កាលបរិច្ឆេទ 03/09/2024'),
+            ],
+          ),
           DataTable(
             border: TableBorder.all(width: 0.5),
             columnSpacing: 40,
@@ -81,6 +106,23 @@ class InvioceTable extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Text('Total: \$${totalAmount.toStringAsFixed(2)}'),
           ),
+          Container(
+            width: 500,
+            color: Colors.amber,
+            child: ListView.builder(
+              itemCount: selectedInvoices.length,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                final invoice = selectedInvoices[index];
+                return ListTile(
+                  title: Text(
+                      'Invoice ID: ${invoice.id}, Amount: \$${invoice.money}'),
+                  subtitle: Text(
+                      'Customer: ${invoice.cusName}, Market: ${invoice.mall}'),
+                );
+              },
+            ),
+          )
         ],
       ),
     );
@@ -99,8 +141,7 @@ class InvioceTable extends StatelessWidget {
               value: isSelected,
               onChanged: (bool? value) {
                 Provider.of<ReportProvider>(context, listen: false)
-                    .toggleInvoiceSelection(report.id!, report.money!);
-                print('report.id ${report.id}');
+                    .toggleInvoiceSelection(report);
               },
             ),
           ),

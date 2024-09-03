@@ -11,6 +11,11 @@ class ReportProvider with ChangeNotifier {
   List<ReportModel> get reports => _reports;
   double get totalAmount => _totalAmount;
   Map<int, bool> get selectedInvoices => _selectedInvoices;
+  List<ReportModel> get selectedInvoicesList {
+    return _reports
+        .where((report) => _selectedInvoices[report.id] == true)
+        .toList();
+  }
 
   void changeLocal(String newLocalName, List<ReportModel> reports) {
     _lacalName = newLocalName;
@@ -20,15 +25,17 @@ class ReportProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleInvoiceSelection(int id, double amount) {
-    print(
-        '_selectedInvoices.containsKey(id) && _selectedInvoices[id] ${_selectedInvoices.containsKey(id)} + ${_selectedInvoices[id]}');
-    if (_selectedInvoices.containsKey(id) && _selectedInvoices[id] == true) {
-      _selectedInvoices[id] = false;
-      _totalAmount -= amount;
+  void toggleInvoiceSelection(ReportModel reportSelected) {
+    print("reportSelected ${reportSelected.cusName}");
+    // print(
+    //     '_selectedInvoices.containsKey(id) && _selectedInvoices[id] ${_selectedInvoices.containsKey(id)} + ${_selectedInvoices[id]}');
+    if (_selectedInvoices.containsKey(reportSelected.id) &&
+        _selectedInvoices[reportSelected.id] == true) {
+      _selectedInvoices[reportSelected.id!] = false;
+      _totalAmount -= reportSelected.money!;
     } else {
-      _selectedInvoices[id] = true;
-      _totalAmount += amount;
+      _selectedInvoices[reportSelected.id!] = true;
+      _totalAmount += reportSelected.money!;
     }
     notifyListeners();
   }
